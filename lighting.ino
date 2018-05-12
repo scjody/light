@@ -1,3 +1,5 @@
+
+#include <FastLED.h>
 #include <DmxSimple.h>
 
 #define N_INPUTS 6
@@ -33,6 +35,10 @@ void setup() {
 
 }
 
+uint8_t cycle;
+//enum states {UP, DOWN};
+//int state;
+
 void loop() {
   int v[N_INPUTS];
   
@@ -45,10 +51,37 @@ void loop() {
 
   Serial.print('\n');
 
+  int mode = v[0];
+  if (mode < 256) {
+    // Colour fade
+    int hue1 = map(v[1], 0, 1023, 0, 255);
+    int speed = map(v[2], 0, 1023, 0, 255);
+    int hue2 = map(v[3], 0, 1023, 0, 255);
+
+    int step = hue1 - hue2;
+    int hue;
+    if (cycle < 128) {
+      hue = hue1 - step * cycle / 128;
+    } else {
+      hue = hue2 + step * (cycle - 128) / 128;
+    }
+
+    const CRGB& rgb = CHSV(hue, 255, 255);
+    DmxSimple.write(1, rgb.r);
+    DmxSimple.write(2, rgb.g);
+    DmxSimple.write(3, rgb.b);
+  } else if (mode < 640) {
+    // Single colour strobe
+    int spd = v[1];
+    int hue = v[2];
+    int sat = v[3];
+  } else {
+    // Dual colour strobe
+    int spd = v[1];
+    int hue1 = v[2];
+    int hue2 = v[3];
+  }
   // ColorKey
-  DmxSimple.write(1, map(v[0], 0, 1023, 0, 255));
-  DmxSimple.write(2, map(v[1], 0, 1023, 0, 255));
-  DmxSimple.write(3, map(v[2], 0, 1023, 0, 255));
   DmxSimple.write(4, 255);
 
   // ADJ
@@ -58,5 +91,7 @@ void loop() {
   DmxSimple.write(8, 0);
 
   // wait for the ADC to settle (at least 2 ms):
-  delay(10);
+  delay(2);
+
+  cycle++;
 }

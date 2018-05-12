@@ -52,6 +52,8 @@ void loop() {
   Serial.print('\n');
 
   int mode = v[0];
+  int hue;
+
   if (mode < 256) {
     // Colour fade
     int hue1 = map(v[1], 0, 1023, 0, 255);
@@ -59,7 +61,7 @@ void loop() {
     int hue2 = map(v[3], 0, 1023, 0, 255);
 
     int step = hue1 - hue2;
-    int hue;
+
     if (cycle < 128) {
       hue = hue1 - step * cycle / 128;
     } else {

@@ -46,6 +46,8 @@ uint16_t doubleStrobeCounter;
 
 void loop() {
   int v[N_INPUTS];
+
+  Serial.print("cat ");
   
   for (int i = 0; i < N_INPUTS; i++) {
      int raw = map(analogRead(analog_pins[i]), 1023, 0, 0, 1023);
@@ -54,7 +56,7 @@ void loop() {
      Serial.print(' ');
   }
 
-  Serial.print('\n');
+  Serial.print("meow\n");
 
   int mode = v[0];
 

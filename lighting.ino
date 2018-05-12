@@ -36,8 +36,10 @@ void setup() {
 }
 
 uint8_t cycle;
-//enum states {UP, DOWN};
-//int state;
+enum states {UP, DOWN};
+int state;
+int16_t place_in_span;
+
 int hue;
 
 void loop() {
@@ -57,16 +59,33 @@ void loop() {
   if (mode < 256) {
     // Colour fade
     int hue1 = map(v[1], 0, 1023, 0, 255);
-    int speed = map(v[2], 0, 1023, 0, 255);
+    int spd = map(v[2], 0, 1023, 2048, 32);
     int hue2 = map(v[3], 0, 1023, 0, 255);
 
-    int step = hue1 - hue2;
-
-    if (cycle < 128) {
-      hue = hue1 - step * cycle / 128;
-    } else {
-      hue = hue2 + step * (cycle - 128) / 128;
+    if (hue1 > hue2) {
+      int swap = hue1;
+      hue1 = hue2;
+      hue2 = swap;
     }
+
+    int16_t scaled_span = (hue2 - hue1) * 128;
+
+    if (state == UP) {
+      place_in_span += scaled_span / spd;
+    } else if (state == DOWN) {
+      place_in_span -= scaled_span / spd;
+    } else {
+      // shouldn't happen, so let's fix it
+      state = UP;
+    }
+
+    if (place_in_span > scaled_span) {
+      state = DOWN;
+    } else if (place_in_span < 0) {
+      state = UP;
+    }
+
+    hue = hue1 + place_in_span / 256;
   } else if (mode < 640) {
     // Single colour strobe
     int spd = v[1];

@@ -38,6 +38,7 @@ void setup() {
 uint8_t cycle;
 //enum states {UP, DOWN};
 //int state;
+int hue;
 
 void loop() {
   int v[N_INPUTS];
@@ -52,7 +53,6 @@ void loop() {
   Serial.print('\n');
 
   int mode = v[0];
-  int hue;
 
   if (mode < 256) {
     // Colour fade

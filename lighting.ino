@@ -35,7 +35,6 @@ void setup() {
 
 }
 
-uint8_t cycle;
 enum states {UP, DOWN};
 int state;
 int16_t place_in_span;
@@ -114,6 +113,4 @@ void loop() {
 
   // wait for the ADC to settle (at least 2 ms):
   delay(2);
-
-  cycle++;
 }

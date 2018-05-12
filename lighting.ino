@@ -65,11 +65,6 @@ void loop() {
     } else {
       hue = hue2 + step * (cycle - 128) / 128;
     }
-
-    const CRGB& rgb = CHSV(hue, 255, 255);
-    DmxSimple.write(1, rgb.r);
-    DmxSimple.write(2, rgb.g);
-    DmxSimple.write(3, rgb.b);
   } else if (mode < 640) {
     // Single colour strobe
     int spd = v[1];
@@ -81,13 +76,19 @@ void loop() {
     int hue1 = v[2];
     int hue2 = v[3];
   }
+
+  const CRGB& rgb = CHSV(hue, 255, 255);
+
   // ColorKey
+  DmxSimple.write(1, rgb.r);
+  DmxSimple.write(2, rgb.g);
+  DmxSimple.write(3, rgb.b);
   DmxSimple.write(4, 255);
 
   // ADJ
-  DmxSimple.write(5, map(v[0], 0, 1023, 0, 255));
-  DmxSimple.write(6, map(v[1], 0, 1023, 0, 255));
-  DmxSimple.write(7, map(v[2], 0, 1023, 0, 255));
+  DmxSimple.write(5, rgb.r);
+  DmxSimple.write(6, rgb.g);
+  DmxSimple.write(7, rgb.b);
   DmxSimple.write(8, 0);
 
   // wait for the ADC to settle (at least 2 ms):

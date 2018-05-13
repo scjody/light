@@ -5,6 +5,8 @@
 #define N_INPUTS 6
 static const uint8_t analog_pins[] = {A3,A2,A1,A0,A4,A5};
 #define SAMPLES 10
+#define BAUD 57600
+#define SEND_INTERVAL 100 // ms
 
 typedef struct movingAvg {
   int values[SAMPLES];
@@ -31,9 +33,11 @@ void setup() {
 
   DmxSimple.maxChannel(8);
 
-  Serial.begin(57600);
+  Serial.begin(BAUD);
 
 }
+
+unsigned long last_send_time = 0;
 
 enum states {UP, DOWN};
 int state;
@@ -46,15 +50,23 @@ uint16_t doubleStrobeCounter;
 
 void loop() {
   int v[N_INPUTS];
+
   
   for (int i = 0; i < N_INPUTS; i++) {
      int raw = map(analogRead(analog_pins[i]), 1023, 0, 0, 1023);
      v[i] = compute_avg(&avgs[i], raw);
-     Serial.print(v[i]);
-     Serial.print(' ');
   }
 
-  Serial.print('\n');
+  if (millis() - last_send_time >= SEND_INTERVAL) {
+    last_send_time += SEND_INTERVAL;
+
+    Serial.print("cat ");
+    for (int i = 0; i < N_INPUTS; i++) {
+      Serial.print(v[i]);
+      Serial.print(' ');
+    }
+    Serial.print("meow\n");
+  }
 
   int mode = v[0];
 

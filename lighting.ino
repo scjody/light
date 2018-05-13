@@ -40,6 +40,9 @@ int state;
 int16_t place_in_span;
 
 int hue;
+int value;
+int singleStrobeCounter;
+uint16_t doubleStrobeCounter;
 
 void loop() {
   int v[N_INPUTS];
@@ -55,7 +58,7 @@ void loop() {
 
   int mode = v[0];
 
-  if (true) {
+  if (mode < 256) {
     // Colour fade
     int hue1 = map(v[1], 0, 1023, 0, 255);
     int spd = map(v[2], 0, 1023, 2048, 32);
@@ -87,17 +90,30 @@ void loop() {
     hue = hue1 + place_in_span / 256;
   } else if (mode < 640) {
     // Single colour strobe
-    int spd = v[1];
-    int hue = v[2];
-    int sat = v[3];
+    int spd = map(v[1], 0, 1023, 0, 255);
+    int hue = map(v[2], 0, 1023, 0, 255);
+    int sat = map(v[3], 0, 1023, 0, 255);
+    if((singleStrobeCounter % (2*spd)) < spd) {
+      value = 255;
+      singleStrobeCounter++;
+    } else {
+      value = 0;
+      singleStrobeCounter++;
+    }
   } else {
     // Dual colour strobe
-    int spd = v[1];
-    int hue1 = v[2];
-    int hue2 = v[3];
+    int spd = map(v[1], 0, 1023, 1, 75);
+    int hue1 = map(v[2], 0, 1023, 0, 255);
+    int hue2 = map(v[3], 0, 1023, 0, 255);
+    doubleStrobeCounter++;
+    if((doubleStrobeCounter % (2*spd)) < spd) {
+      hue = hue1;
+    } else {
+      hue = hue2;
+    }
   }
 
-  const CRGB& rgb = CHSV(hue, 255, 255);
+  const CRGB& rgb = CHSV(hue, 255, value);
 
   // ColorKey
   DmxSimple.write(1, rgb.r);

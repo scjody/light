@@ -90,15 +90,14 @@ void loop() {
     hue = hue1 + place_in_span / 256;
   } else if (mode < 640) {
     // Single colour strobe
-    int spd = map(v[1], 0, 1023, 0, 255);
+    int spd = map(v[1], 0, 1023, 1, 75);
     int hue = map(v[2], 0, 1023, 0, 255);
     int sat = map(v[3], 0, 1023, 0, 255);
+    singleStrobeCounter++;
     if((singleStrobeCounter % (2*spd)) < spd) {
       value = 255;
-      singleStrobeCounter++;
     } else {
       value = 0;
-      singleStrobeCounter++;
     }
   } else {
     // Dual colour strobe

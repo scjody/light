@@ -105,8 +105,9 @@ void loop() {
     val = 255;
   } else if (mode < 640) {
     // Single colour strobe
-    int spd = map(v[1], 0, 1023, 1, 75);
-    int hue = map(v[2], 0, 1023, 0, 255);
+
+    int spd = map(v[2], 0, 1023, 1, 75);
+    int hue = map(v[1], 0, 1023, 0, 255);
     int sat = map(v[3], 0, 1023, 0, 255);
     singleStrobeCounter++;
     if((singleStrobeCounter % (2*spd)) < spd) {
@@ -116,8 +117,9 @@ void loop() {
     }
   } else {
     // Dual colour strobe
-    int spd = map(v[1], 0, 1023, 1, 75);
-    int hue1 = map(v[2], 0, 1023, 0, 255);
+
+    int spd = map(v[2], 0, 1023, 1, 75);
+    int hue1 = map(v[1], 0, 1023, 0, 255);
     int hue2 = map(v[3], 0, 1023, 0, 255);
     doubleStrobeCounter++;
     if((doubleStrobeCounter % (2*spd)) < spd) {

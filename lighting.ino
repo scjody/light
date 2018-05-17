@@ -46,7 +46,7 @@ int16_t place_in_span;
 int hue;
 int sat;
 int val;
-int singleStrobeCounter;
+uint16_t singleStrobeCounter;
 uint16_t doubleStrobeCounter;
 
 void loop() {

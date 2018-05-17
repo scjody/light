@@ -48,11 +48,11 @@ int sat;
 int val;
 uint16_t singleStrobeCounter;
 uint16_t doubleStrobeCounter;
+int prev_spd;
 
 void loop() {
   int v[N_INPUTS];
 
-  
   for (int i = 0; i < N_INPUTS; i++) {
      int raw = map(analogRead(analog_pins[i]), 1023, 0, 0, 1023);
      v[i] = compute_avg(&avgs[i], raw);
@@ -105,10 +105,15 @@ void loop() {
     val = 255;
   } else if (mode < 640) {
     // Single colour strobe
-
     int spd = map(v[2], 0, 1023, 1, 75);
     int hue = map(v[1], 0, 1023, 0, 255);
     int sat = map(v[3], 0, 1023, 0, 255);
+
+    if (spd != prev_spd) {
+      singleStrobeCounter = singleStrobeCounter % (2*prev_spd);
+      prev_spd = spd;
+    }
+
     singleStrobeCounter++;
     if((singleStrobeCounter % (2*spd)) < spd) {
       val = 255;
@@ -117,10 +122,15 @@ void loop() {
     }
   } else {
     // Dual colour strobe
-
     int spd = map(v[2], 0, 1023, 1, 75);
     int hue1 = map(v[1], 0, 1023, 0, 255);
     int hue2 = map(v[3], 0, 1023, 0, 255);
+
+    if (spd != prev_spd) {
+      doubleStrobeCounter = doubleStrobeCounter % (2*prev_spd);
+      prev_spd = spd;
+    }
+
     doubleStrobeCounter++;
     if((doubleStrobeCounter % (2*spd)) < spd) {
       hue = hue1;

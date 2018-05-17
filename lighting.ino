@@ -125,6 +125,9 @@ void loop() {
     } else {
       hue = hue2;
     }
+
+    sat = 255;
+    val = 255;
   }
 
   const CRGB& rgb = CHSV(hue, sat, val);

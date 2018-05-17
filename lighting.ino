@@ -45,7 +45,7 @@ int16_t place_in_span;
 
 int hue;
 int sat;
-int value;
+int val;
 int singleStrobeCounter;
 uint16_t doubleStrobeCounter;
 
@@ -102,7 +102,7 @@ void loop() {
     }
 
     hue = hue1 + place_in_span / 256;
-    value = 255;
+    val = 255;
   } else if (mode < 640) {
     // Single colour strobe
     int spd = map(v[1], 0, 1023, 1, 75);
@@ -110,9 +110,9 @@ void loop() {
     int sat = map(v[3], 0, 1023, 0, 255);
     singleStrobeCounter++;
     if((singleStrobeCounter % (2*spd)) < spd) {
-      value = 255;
+      val = 255;
     } else {
-      value = 0;
+      val = 0;
     }
   } else {
     // Dual colour strobe
@@ -127,7 +127,7 @@ void loop() {
     }
   }
 
-  const CRGB& rgb = CHSV(hue, sat, value);
+  const CRGB& rgb = CHSV(hue, sat, val);
 
   // ColorKey
   DmxSimple.write(1, rgb.r);

@@ -107,8 +107,8 @@ void loop() {
   } else if (mode < 640) {
     // Single colour strobe
     int spd = map(v[2], 0, 1023, 1, 75);
-    int hue = map(v[1], 0, 1023, 0, 255);
-    int sat = map(v[3], 0, 1023, 0, 255);
+    hue = map(v[1], 0, 1023, 0, 255);
+    sat = map(v[3], 0, 1023, 0, 255);
 
     if (spd != prev_spd) {
       singleStrobeCounter = singleStrobeCounter % (2*prev_spd);

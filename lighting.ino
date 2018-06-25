@@ -74,7 +74,7 @@ void loop() {
   if (mode < 256) {
     // Colour fade
     int hue1 = map(v[1], 0, 1023, 0, 255);
-    int spd = map(v[2], 0, 1023, 2048, 32);
+    int spd = map(v[2], 0, 1023, 32, 2048);
     int hue2 = map(v[3], 0, 1023, 0, 255);
     sat = map(v[4], 0, 1023, 0, 255);
 

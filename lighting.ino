@@ -74,9 +74,10 @@ void loop() {
   if (mode < 256) {
     // Colour fade
     int hue1 = map(v[1], 0, 1023, 0, 255);
-    int spd = map(v[2], 0, 1023, 2048, 32);
+    int spd = map(v[2], 0, 1023, 32, 2048);
     int hue2 = map(v[3], 0, 1023, 0, 255);
-    sat = map(v[4], 0, 1023, 0, 255);
+    //sat = map(v[4], 0, 1023, 0, 255);
+    sat = 255;
 
     if (hue1 > hue2) {
       int swap = hue1;
@@ -106,8 +107,8 @@ void loop() {
   } else if (mode < 640) {
     // Single colour strobe
     int spd = map(v[2], 0, 1023, 1, 75);
-    int hue = map(v[1], 0, 1023, 0, 255);
-    int sat = map(v[3], 0, 1023, 0, 255);
+    hue = map(v[1], 0, 1023, 0, 255);
+    sat = map(v[3], 0, 1023, 0, 255);
 
     if (spd != prev_spd) {
       singleStrobeCounter = singleStrobeCounter % (2*prev_spd);

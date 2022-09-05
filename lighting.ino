@@ -2,8 +2,8 @@
 #include <FastLED.h>
 #include <DmxSimple.h>
 
-#define N_INPUTS 6
-static const uint8_t analog_pins[] = {A3,A2,A1,A0,A4,A5};
+#define N_INPUTS 5  // note: HW supports 6 inputs as wired
+static const uint8_t analog_pins[] = {A4,A3,A2,A1,A0};
 #define SAMPLES 10
 #define BAUD 57600
 #define SEND_INTERVAL 100 // ms
@@ -34,7 +34,6 @@ void setup() {
   DmxSimple.maxChannel(8);
 
   Serial.begin(BAUD);
-
 }
 
 unsigned long last_send_time = 0;

@@ -42,10 +42,11 @@ enum states {UP, DOWN};
 int state;
 int16_t place_in_span;
 
-int hue;
+uint8_t hue;
 int sat;
 int val;
 uint16_t count;
+int prev_step;
 uint16_t doubleStrobeCounter;
 int prev_spd;
 CRGB rgb;
@@ -120,7 +121,7 @@ void loop() {
   } else if (mode < 640) {
     // Single colour strobe
 
-    hue = map(v[1], 0, 1023, 0, 255);
+    uint8_t set_hue = map(v[1], 0, 1023, 0, 255);
     int submode = v[2];
     sat = map(v[3], 0, 1023, 0, 255);
     int spd = constrain(map(v[4], 2, 1020, 66, 1), 1, 66);
@@ -143,6 +144,14 @@ void loop() {
     count++;
     int step = (count % (steps * spd) / spd);
 
+    if (submode > 256 and submode < 768) {
+      // fixed hue
+      hue = set_hue;
+    } else if (step == 0 and prev_step != 0) {
+      // increment hue (once per cycle)
+      hue += set_hue;
+    }
+
     if (submode < 512) {
       val = step == 0 ? 0 : 255;
       rgb = CHSV(hue, sat, val);
@@ -159,6 +168,8 @@ void loop() {
         rgb.g = 0;
       }
     }
+
+    prev_step = step;
   } else {
     // Dual colour strobe
     int spd = map(v[2], 0, 1023, 1, 75);

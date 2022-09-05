@@ -49,7 +49,6 @@ int sat;
 int val;
 uint16_t count;
 int prev_step;
-uint16_t doubleStrobeCounter;
 int prev_spd;
 CRGB rgb;
 
@@ -176,16 +175,16 @@ void loop() {
     // Dual colour strobe
     int hue1 = map(v[1], 0, 1023, 0, 255);
     int hue2 = map(v[2], 0, 1023, 0, 255);
-    int dc = map(v[3], 0, 1023, 0, 255);
-    int spd = map(v[4], 0, 1023, 75, 1);
+    int dc = map(v[3], 0, 1023, 16, 244);
+    int spd = constrain(map(v[4], 2, 1020, 66, 1), 1, 66);
 
     if (spd != prev_spd) {
-      doubleStrobeCounter = doubleStrobeCounter % (2*prev_spd);
+      count = count % (2 * prev_spd);
       prev_spd = spd;
     }
 
-    doubleStrobeCounter++;
-    if((doubleStrobeCounter % (2*spd)) < spd) {
+    count++;
+    if (count % (2 * spd) < 2 * spd * dc / 256) {
       hue = hue1;
     } else {
       hue = hue2;

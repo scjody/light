@@ -70,7 +70,12 @@ void loop() {
 
   int mode = v[0];
 
-  if (mode < 256) {
+  if (mode < 8) {
+    // gentle white
+    hue = 255;
+    sat = 0;
+    val = 150;
+  } else if (mode < 256) {
     // Colour fade
     int hue1 = map(v[1], 0, 1023, 0, 255);
     int spd = map(v[2], 0, 1023, 32, 2048);

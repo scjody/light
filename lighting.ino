@@ -174,9 +174,10 @@ void loop() {
     prev_step = step;
   } else {
     // Dual colour strobe
-    int spd = map(v[2], 0, 1023, 1, 75);
     int hue1 = map(v[1], 0, 1023, 0, 255);
-    int hue2 = map(v[3], 0, 1023, 0, 255);
+    int hue2 = map(v[2], 0, 1023, 0, 255);
+    int dc = map(v[3], 0, 1023, 0, 255);
+    int spd = map(v[4], 0, 1023, 75, 1);
 
     if (spd != prev_spd) {
       doubleStrobeCounter = doubleStrobeCounter % (2*prev_spd);

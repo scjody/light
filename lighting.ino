@@ -1,3 +1,5 @@
+// WARNING: FUN WEEKEND PROJECTS DO NOT REQUIRE CLEAN CODE!
+
 #define FASTLED_INTERNAL
 #include <FastLED.h>
 #include <DmxSimple.h>

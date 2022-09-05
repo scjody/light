@@ -78,10 +78,11 @@ void loop() {
   } else if (mode < 256) {
     // Colour fade
     int hue1 = map(v[1], 0, 1023, 0, 255);
-    int spd = map(v[2], 0, 1023, 32, 2048);
-    int hue2 = map(v[3], 0, 1023, 0, 255);
-    //sat = map(v[4], 0, 1023, 0, 255);
-    sat = 255;
+    int hue2 = map(v[2], 0, 1023, 0, 255);
+    sat = map(v[3], 0, 1023, 0, 255);
+    //sat = 255;
+    int inc = map(v[4], 0, 1023, 16, 128);
+    val = 255;
 
     if (hue1 > hue2) {
       int swap = hue1;
@@ -92,22 +93,23 @@ void loop() {
     int16_t scaled_span = (hue2 - hue1) * 128;
 
     if (state == UP) {
-      place_in_span += scaled_span / spd;
+      place_in_span += inc;
     } else if (state == DOWN) {
-      place_in_span -= scaled_span / spd;
+      place_in_span -= inc;
     } else {
       // shouldn't happen, so let's fix it
       state = UP;
     }
 
     if (place_in_span > scaled_span) {
+      place_in_span = scaled_span;
       state = DOWN;
     } else if (place_in_span < 0) {
+      place_in_span = 0;
       state = UP;
     }
 
     hue = hue1 + place_in_span / 256;
-    val = 255;
   } else if (mode < 640) {
     // Single colour strobe
     int spd = map(v[2], 0, 1023, 1, 75);

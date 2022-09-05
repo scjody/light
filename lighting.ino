@@ -45,9 +45,10 @@ int16_t place_in_span;
 int hue;
 int sat;
 int val;
-uint16_t singleStrobeCounter;
+uint16_t count;
 uint16_t doubleStrobeCounter;
 int prev_spd;
+CRGB rgb;
 
 void loop() {
   int v[N_INPUTS];
@@ -77,6 +78,8 @@ void loop() {
     hue = 255;
     sat = 0;
     val = 150;
+
+    rgb = CHSV(hue, sat, val);
   } else if (mode < 256) {
     // Colour fade
     int hue1 = map(v[1], 0, 1023, 0, 255);
@@ -112,22 +115,49 @@ void loop() {
     }
 
     hue = hue1 + place_in_span / 256;
+
+    rgb = CHSV(hue, sat, val);
   } else if (mode < 640) {
     // Single colour strobe
-    int spd = map(v[2], 0, 1023, 1, 75);
+
     hue = map(v[1], 0, 1023, 0, 255);
+    int submode = v[2];
     sat = map(v[3], 0, 1023, 0, 255);
+    int spd = constrain(map(v[4], 2, 1020, 66, 1), 1, 66);
+    if (send) Serial.println(spd);
+
+    int steps = 2;
+    if (submode < 512) {
+      // on/off ("in-phase")
+      steps = 2;
+    } else {
+      // r/g/b ("out-of-phase")
+      steps = 3;
+    }
 
     if (spd != prev_spd) {
-      singleStrobeCounter = singleStrobeCounter % (2*prev_spd);
+      count = count % (steps * prev_spd);
       prev_spd = spd;
     }
 
-    singleStrobeCounter++;
-    if((singleStrobeCounter % (2*spd)) < spd) {
-      val = 255;
+    count++;
+    int step = (count % (steps * spd) / spd);
+
+    if (submode < 512) {
+      val = step == 0 ? 0 : 255;
+      rgb = CHSV(hue, sat, val);
     } else {
-      val = 0;
+      rgb = CHSV(hue, sat, 255);
+      if (step == 0) {
+        rgb.g = 0;
+        rgb.b = 0;
+      } else if (step == 1) {
+        rgb.r = 0;
+        rgb.b = 0;
+      } else {
+        rgb.r = 0;
+        rgb.g = 0;
+      }
     }
   } else {
     // Dual colour strobe
@@ -149,9 +179,9 @@ void loop() {
 
     sat = 255;
     val = 255;
-  }
 
-  const CRGB& rgb = CHSV(hue, sat, val);
+    rgb = CHSV(hue, sat, val);
+  }
 
   // ColorKey
   DmxSimple.write(1, rgb.r);

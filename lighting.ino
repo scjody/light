@@ -6,7 +6,7 @@
 static const uint8_t analog_pins[] = {A4,A3,A2,A1,A0};
 #define SAMPLES 10
 #define BAUD 57600
-#define SEND_INTERVAL 100 // ms
+#define SEND_INTERVAL 1000 // ms
 
 typedef struct movingAvg {
   int values[SAMPLES];
@@ -57,7 +57,9 @@ void loop() {
      v[i] = compute_avg(&avgs[i], raw);
   }
 
+  bool send = false;
   if (millis() - last_send_time >= SEND_INTERVAL) {
+    send = true;
     last_send_time += SEND_INTERVAL;
 
     Serial.print("cat ");

@@ -1,4 +1,5 @@
 // WARNING: FUN WEEKEND PROJECTS DO NOT REQUIRE CLEAN CODE!
+// (TBH I feel a bit bad about this, and I hope to clean it up someday!)
 
 #define FASTLED_INTERNAL
 #include <FastLED.h>

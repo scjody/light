@@ -87,8 +87,8 @@ void loop() {
     // Colour fade
     int hue1 = map(v[1], 0, 1023, 0, 255);
     int hue2 = map(v[2], 0, 1023, 0, 255);
-    sat = map(v[3], 0, 1023, 0, 255);
-    //sat = 255;
+    //sat = map(v[3], 0, 1023, 0, 255);
+    sat = 255;
     int inc = map(v[4], 0, 1023, 16, 128);
     val = 255;
 
@@ -125,9 +125,9 @@ void loop() {
 
     uint8_t set_hue = map(v[1], 0, 1023, 0, 255);
     int submode = v[2];
-    sat = map(v[3], 0, 1023, 0, 255);
+    //sat = map(v[3], 0, 1023, 0, 255);
+    sat = 255;
     int spd = constrain(map(v[4], 2, 1020, 66, 1), 1, 66);
-    if (send) Serial.println(spd);
 
     int steps = 2;
     if (submode < 512) {
@@ -197,17 +197,36 @@ void loop() {
     rgb = CHSV(hue, sat, val);
   }
 
+  // TEMP: clamp values to ensure only red or white
+  uint8_t gb = max(rgb.g, rgb.b);
+  uint8_t r = max(rgb.r, gb);
+
+  if (send) {
+    Serial.print("r: ");
+    Serial.print(rgb.r);
+    Serial.print(", g: ");
+    Serial.print(rgb.g);
+    Serial.print(", b: ");
+    Serial.print(rgb.b);
+    Serial.print(", gb: ");
+    Serial.println(gb);
+  }
+
   // ColorKey
-  DmxSimple.write(1, rgb.r);
-  DmxSimple.write(2, rgb.g);
-  DmxSimple.write(3, rgb.b);
+  DmxSimple.write(1, r);
+  DmxSimple.write(2, gb);
+  DmxSimple.write(3, gb);
   DmxSimple.write(4, 255);
 
   // ADJ
-  DmxSimple.write(5, rgb.r);
-  DmxSimple.write(6, rgb.g);
-  DmxSimple.write(7, rgb.b);
-  DmxSimple.write(8, 0);
+  DmxSimple.write(5, r);
+  DmxSimple.write(6, gb);
+  DmxSimple.write(7, gb);
+  if (mode < 8) {
+    DmxSimple.write(8, 0);
+  } else {
+    DmxSimple.write(8, gb);
+  }
 
   // wait for the ADC to settle (at least 2 ms):
   delay(2);
